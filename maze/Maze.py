@@ -18,6 +18,9 @@ class Maze:
         self.__initialize_nodes()
 
     def __initialize_nodes(self):
+        """
+        Initializes all graph nodes and populates their neighbor lists.
+        """
         grid = {}
 
         # Create nodes
@@ -36,6 +39,10 @@ class Maze:
         self.__initialize_neighbors(grid)
 
     def __initialize_neighbors(self, grid):
+        """
+        Initializes neighbor lists for all graph nodes.
+        :param grid: a dictionary grid of all graph nodes.
+        """
         for x in range(1, self.length):
             col = x
             row = 0
