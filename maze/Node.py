@@ -50,3 +50,6 @@ class Node:
         :return: The list of neighboring nodes
         """
         return self.neighbors
+
+    def get_coordinates(self):
+        return self.x, self.y
