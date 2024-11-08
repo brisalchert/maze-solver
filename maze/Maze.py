@@ -35,24 +35,6 @@ class Maze:
         # Initialize neighbors for each node
         self.__initialize_neighbors(grid)
 
-    def __create_node(self, grid, x, y):
-        # Create the node
-        node = Node(x, y)
-
-        # Add the node to the grid
-        grid[(x, y)] = node
-
-        # Initialize an adjacency list to add node to the graph
-        self.graph[node] = []
-
-        # Recursively add nodes if there is room for nodes below or to the right
-        if x < self.length - 1:
-            self.__create_node(grid, x + 1, y)
-        if y < self.length - 1:
-            self.__create_node(grid, x, y + 1)
-
-        return grid
-
     def __initialize_neighbors(self, grid):
         for x in range(1, self.length):
             col = x
