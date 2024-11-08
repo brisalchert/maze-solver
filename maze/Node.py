@@ -23,12 +23,6 @@ class Node:
         # Initial Color
         self.color = DARKGRAY
 
-        # Walls
-        self.top_border = True
-        self.bottom_border = True
-        self.left_border = True
-        self.right_border = True
-
         # Neighboring nodes
         self.neighbors = []
 
