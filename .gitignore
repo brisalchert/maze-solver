@@ -1,5 +1,8 @@
-# Ignore .idea folder
+# .idea folder
 .idea
 
-# Ignore compiled python files
+# Compiled python files
 *.pyc
+
+# Word files
+.docx
