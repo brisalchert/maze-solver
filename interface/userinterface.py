@@ -1,8 +1,8 @@
-from PyQt6 import QtCore
+from PyQt6 import QtCore, QtGui
 from PyQt6.QtCore import Qt, QRectF, pyqtSignal, QObject
 from PyQt6.QtGui import QBrush, QColor
 from PyQt6.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsView, QWidget, QVBoxLayout, QListWidget, \
-    QHBoxLayout, QPushButton
+    QHBoxLayout, QPushButton, QSpacerItem, QSizePolicy, QLayout
 
 
 class MazeWidget(QWidget):
@@ -22,6 +22,8 @@ class MazeWidget(QWidget):
         self.dfs_button = QPushButton("Solve with DFS", self)
 
         self.log = QListWidget(self)
+        self.log.setMinimumWidth(260)
+        self.log.setMaximumWidth(260)
 
         self.maze_layout = QVBoxLayout()
         self.maze_layout.addWidget(self.view)
@@ -29,10 +31,19 @@ class MazeWidget(QWidget):
         self.maze_layout.addWidget(self.dfs_button)
         self.maze_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.top_level_layout = QHBoxLayout()
-        self.top_level_layout.addLayout(self.maze_layout)
-        self.top_level_layout.addWidget(self.log)
-        self.top_level_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.log_layout = QHBoxLayout()
+        self.h_spacer = QSpacerItem(10000, 0, QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Expanding)
+        self.log_layout.addItem(self.h_spacer)
+        self.log_layout.addLayout(self.maze_layout)
+        self.log_layout.addWidget(self.log)
+        self.log_layout.addItem(self.h_spacer)
+        self.log_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.top_level_layout = QVBoxLayout()
+        self.v_spacer = QSpacerItem(0, 10000, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
+        self.top_level_layout.addItem(self.v_spacer)
+        self.top_level_layout.addLayout(self.log_layout)
+        self.top_level_layout.addItem(self.v_spacer)
         self.setLayout(self.top_level_layout)
 
         # Initialize MazeTile dictionary
