@@ -25,12 +25,12 @@ class MainWindow(QMainWindow):
         # Factor to slow maze traversal algorithms by (in seconds per step)
         self.slow_factor = 0.005
 
-        self.generate_button = QPushButton("Start", self)
+        self.generate_button = QPushButton("Generate Maze", self)
         self.generate_button.clicked.connect(self.generate_maze)
         self.maze_widget.layout.addWidget(self.generate_button)
         self.maze_generated = False
 
-        self.dfs_button = QPushButton("DFS", self)
+        self.dfs_button = QPushButton("Solve with DFS", self)
         self.dfs_button.clicked.connect(self.solve_maze_dfs)
         self.maze_widget.layout.addWidget(self.dfs_button)
 
