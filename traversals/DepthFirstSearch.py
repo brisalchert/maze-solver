@@ -30,7 +30,8 @@ class DepthFirstSearch:
 
         # Toggle tile color
         x, y = current.get_coordinates()
-        self.set_color(x, y, "skyblue")
+        if (current != self.start) & (current != self.end):
+            self.set_color(x, y, "skyblue")
 
         if self.slow_factor is not None:
             sleep(self.slow_factor)
@@ -40,7 +41,9 @@ class DepthFirstSearch:
             self.reached[0] = True
 
             # Change tile color to the path
-            self.set_color(x, y, "green")
+            if (current != self.start) & (current != self.end):
+                self.set_color(x, y, "green")
+
             return
 
         # Recursively traverse adjacent nodes until the goal is found
@@ -50,7 +53,8 @@ class DepthFirstSearch:
 
                 # Upon returning from completing the maze, set path node color
                 if self.reached[0]:
-                    self.set_color(x, y, "green")
+                    if (current != self.start) & (current != self.end):
+                        self.set_color(x, y, "green")
                     if self.slow_factor is not None:
                         sleep(self.slow_factor)
                     return

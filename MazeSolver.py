@@ -13,7 +13,7 @@ from traversals import DepthFirstSearch
 sys.setrecursionlimit(10000)
 
 class MainWindow(QMainWindow):
-    def __init__(self, size):
+    def __init__(self, size, slow_factor=None):
         super().__init__()
         self.setWindowTitle("Maze Solver")
 
@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.maze_widget)
 
         # Factor to slow maze traversal algorithms by (in seconds per step)
-        self.slow_factor = 0.005
+        self.slow_factor = slow_factor
 
         # Assign button functions
         self.maze_widget.assign_generate_button(self.generate_maze)
@@ -65,6 +65,15 @@ class MainWindow(QMainWindow):
             for y in range(self.maze.length):
                 tile = self.maze_widget.get_tile(x, y)
                 tile.setBrush(QBrush(QColor("lightgray")))
+
+        self.set_endpoint_colors()
+
+    def set_endpoint_colors(self):
+        start_x, start_y = self.maze.start.get_coordinates()
+        self.set_tile_color(start_x, start_y, "red")
+
+        end_x, end_y = self.maze.end.get_coordinates()
+        self.set_tile_color(end_x, end_y, "blue")
 
     def reset_maze_walls(self):
         for x in range(self.maze.length):
@@ -125,8 +134,10 @@ class MainWindow(QMainWindow):
             if tile1.x == tile2.x + 1:
                 tile1.toggleWallVisible("left")
                 tile2.toggleWallVisible("right")
-        tile1.setBrush(QBrush(QColor("green")))
-        tile2.setBrush(QBrush(QColor("green")))
+        if (node1 != self.maze.start) & (node1 != self.maze.end):
+            tile1.setBrush(QBrush(QColor("green")))
+        if (node2 != self.maze.start) & (node2 != self.maze.end):
+            tile2.setBrush(QBrush(QColor("green")))
         return True
 
     def backtrack(self, node1, node2):
@@ -137,8 +148,10 @@ class MainWindow(QMainWindow):
         tile2 = self.maze_widget.get_tile(node2_x, node2_y)
 
         # Change tile colors to indicate completed path
-        tile1.setBrush(QBrush(QColor("gold")))
-        tile2.setBrush(QBrush(QColor("gold")))
+        if (node1 != self.maze.start) & (node1 != self.maze.end):
+            tile1.setBrush(QBrush(QColor("gold")))
+        if (node2 != self.maze.start) & (node2 != self.maze.end):
+            tile2.setBrush(QBrush(QColor("gold")))
 
     def generate_maze_dfs(self, maze, slow_factor=None):
         # Create a boolean visited dictionary
@@ -235,10 +248,11 @@ class WorkerSignals(QObject):
 
 if __name__ == '__main__':
     maze_size = 25
+    slow_factor = 0.005
 
     app = QApplication([])
 
-    window = MainWindow(maze_size)
+    window = MainWindow(maze_size, slow_factor)
     window.show()
 
     app.exec()
