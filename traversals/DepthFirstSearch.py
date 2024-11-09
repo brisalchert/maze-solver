@@ -51,5 +51,6 @@ class DepthFirstSearch:
                 # Upon returning from completing the maze, set path node color
                 if self.reached[0]:
                     self.set_color(x, y, "green")
-                    sleep(self.slow_factor)
+                    if self.slow_factor is not None:
+                        sleep(self.slow_factor)
                     return
