@@ -35,10 +35,11 @@ class MainWindow(QMainWindow):
         # Reset the maze
         self.reset_maze()
 
-        worker = Worker(self.generate_maze_dfs, self.maze.graph, self.slow_factor)
+        worker = Worker(self.generate_maze_dfs, self.maze, self.slow_factor)
 
         # Set thread to re-enabled generation on completion
         worker.signals.finished.connect(self.enable_generation)
+        worker.signals.finished.connect(self.solve_maze_dfs)
 
         # Disable the generation button
         self.disable_generation()
@@ -63,6 +64,21 @@ class MainWindow(QMainWindow):
             for y in range(self.maze.length):
                 tile = self.maze_widget.get_tile(x, y)
                 tile.enableAllWalls()
+
+        # Reset maze graph
+        self.maze.reset_graph()
+
+    def solve_maze_dfs(self):
+        # Initialize DFS
+        solve_dfs = DepthFirstSearch(self.maze, self.set_tile_color, slow_factor=self.slow_factor)
+
+        # Initialize worker thread to perform DFS
+        worker = Worker(solve_dfs.dfs)
+        self.threadpool.start(worker)
+
+    def set_tile_color(self, x, y, color):
+        tile = self.maze_widget.get_tile(x, y)
+        tile.setBrush(QBrush(QColor(color)))
 
     def toggle_wall(self, node1, node2):
         # Get tiles from nodes
@@ -102,23 +118,27 @@ class MainWindow(QMainWindow):
         tile1.setBrush(QBrush(QColor("gold")))
         tile2.setBrush(QBrush(QColor("gold")))
 
-    def generate_maze_dfs(self, graph, slow_factor):
+    def generate_maze_dfs(self, maze, slow_factor=None):
         # Create a boolean visited dictionary
         visited = {}
-        for vertex in graph.keys():
+        for vertex in maze.graph.keys():
             visited[vertex] = False
 
         # Traverse the graph using the recursive function
-        self.__traverse(graph, visited, self.maze.start, slow_factor)
+        self.__traverse(maze, visited, self.maze.start, slow_factor)
 
         # Reset tile colors
         self.reset_tile_colors()
 
-    def __traverse(self, graph, visited, current, slow_factor):
+    def __traverse(self, maze, visited, current, slow_factor):
+        # Get graph from maze
+        graph = maze.generation_graph
+
         # Mark current node as visited
         visited[current] = True
 
-        sleep(slow_factor)
+        if slow_factor is not None:
+            sleep(slow_factor)
 
         # Recursively visit all adjacent unvisited nodes
         for i in range(len(graph[current])):
@@ -127,10 +147,13 @@ class MainWindow(QMainWindow):
                 neighbor = random.choice(unvisited)
                 # Remove the wall between the two nodes
                 self.toggle_wall(current, neighbor)
+                # Add edge between the two nodes
+                maze.add_edge(current, neighbor)
                 # Visit the neighbor node
-                self.__traverse(graph, visited, neighbor, slow_factor)
+                self.__traverse(maze, visited, neighbor, slow_factor)
                 self.backtrack(current, neighbor)
-                sleep(slow_factor)
+                if slow_factor is not None:
+                    sleep(slow_factor)
 
 class Worker(QRunnable):
     """
