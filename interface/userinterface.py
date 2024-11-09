@@ -9,15 +9,19 @@ class MazeWidget(QWidget):
         self.dimension = length
         self.tile_size = 20
         self.view_size = self.tile_size * (self.dimension + 2)
+
         self.scene = QGraphicsScene()
         self.view = QGraphicsView(self.scene, self)
         self.view.setMaximumSize(self.view_size, self.view_size)
         self.view.setMinimumSize(self.view_size, self.view_size)
         self.view.setBackgroundBrush(QBrush(QColor("gray")))
+
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.view)
         self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setLayout(self.layout)
+
+        # Initialize MazeTile dictionary
         self.tiles = {}
 
         # Initialize the maze tiles
