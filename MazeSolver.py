@@ -38,7 +38,7 @@ class MainWindow(QMainWindow):
 
     def generate_maze(self):
         # Reset the maze
-        self.reset_maze()
+        self.reset_maze_walls()
         self.maze_generated = False
 
         worker = Worker(self.generate_maze_dfs, self.maze, self.slow_factor)
@@ -66,7 +66,7 @@ class MainWindow(QMainWindow):
                 tile = self.maze_widget.get_tile(x, y)
                 tile.setBrush(QBrush(QColor("lightgray")))
 
-    def reset_maze(self):
+    def reset_maze_walls(self):
         for x in range(self.maze.length):
             for y in range(self.maze.length):
                 tile = self.maze_widget.get_tile(x, y)
