@@ -1,7 +1,8 @@
 import random
 import sys
+import traceback
 from time import sleep
-from PyQt6.QtCore import QRunnable, pyqtSlot, QThreadPool
+from PyQt6.QtCore import QRunnable, pyqtSlot, QThreadPool, pyqtSignal, QObject
 from PyQt6.QtGui import QBrush, QColor
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton
 from interface.userinterface import MazeWidget
@@ -31,10 +32,22 @@ class MainWindow(QMainWindow):
         self.threadpool = QThreadPool()
 
     def generate_maze(self):
-        worker = self.GenerationWorker(self.generate_maze_dfs, self.maze.graph)
+        worker = GenerationWorker(self.generate_maze_dfs, self.maze.graph)
+
+        # Set thread to re-enabled generation on completion
+        worker.signals.finished.connect(self.enable_generation)
+
+        # Disable the generation button
+        self.disable_generation()
 
         # Start the generation thread
         self.threadpool.start(worker)
+
+    def disable_generation(self):
+        self.generate_button.setEnabled(False)
+
+    def enable_generation(self):
+        self.generate_button.setEnabled(True)
 
     def reset_tile_colors(self):
         for x in range(self.maze.length):
@@ -110,23 +123,58 @@ class MainWindow(QMainWindow):
                 self.backtrack(current, neighbor)
                 sleep(0.005)
 
-    class GenerationWorker(QRunnable):
+class GenerationWorker(QRunnable):
+    """
+    (Adapted from: https://www.pythonguis.com/tutorials/multithreading-pyqt6-applications-qthreadpool/)
+    Worker thread for running various maze functions.
+    """
+
+    def __init__(self, function, *args, **kwargs):
+        super().__init__()
+        self.function = function
+        self.args = args
+        self.kwargs = kwargs
+        self.signals = WorkerSignals()
+
+    @pyqtSlot()
+    def run(self):
         """
-        Worker thread for running various maze functions.
+        Initialize the runner function with passed args, kwargs.
         """
 
-        def __init__(self, function, *args, **kwargs):
-            super().__init__()
-            self.function = function
-            self.args = args
-            self.kwargs = kwargs
+        try:
+            result = self.function(
+                *self.args, **self.kwargs
+            )
+        except Exception as e:
+            traceback.print_exc()
+            except_type, value = sys.exc_info()[:2]
+            self.signals.error.emit((except_type, value, traceback.format_exc()))
+        else:
+            self.signals.result.emit(result)
+        finally:
+            self.signals.finished.emit()
 
-        @pyqtSlot()
-        def run(self):
-            """
-            Runs the function passed to the worker thread.
-            """
-            self.function(*self.args, **self.kwargs)
+class WorkerSignals(QObject):
+    """
+    (Adapted from: https://www.pythonguis.com/tutorials/multithreading-pyqt6-applications-qthreadpool/)
+    Defines the signals available from a running worker thread.
+
+    Supported signals are:
+
+    finished
+        No data
+
+    error
+        tuple (except_type, value, traceback.format_exc() )
+
+    result
+        object data returned from processing, anything
+
+    """
+    finished = pyqtSignal()
+    error = pyqtSignal(tuple)
+    result = pyqtSignal(object)
 
 if __name__ == '__main__':
     maze_size = 25
