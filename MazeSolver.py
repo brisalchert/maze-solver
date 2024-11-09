@@ -1,7 +1,7 @@
 import random
 import sys
 from time import sleep
-from PyQt6.QtCore import QRunnable, pyqtSlot, QThreadPool, Qt
+from PyQt6.QtCore import QRunnable, pyqtSlot, QThreadPool
 from PyQt6.QtGui import QBrush, QColor
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton
 from interface.userinterface import MazeWidget
@@ -31,7 +31,7 @@ class MainWindow(QMainWindow):
         self.threadpool = QThreadPool()
 
     def generate_maze(self):
-        worker = self.GenerationWorker(self.maze, self.generate_maze_dfs)
+        worker = self.GenerationWorker(self.generate_maze_dfs, self.maze.graph)
 
         # Start the generation thread
         self.threadpool.start(worker)
@@ -80,14 +80,14 @@ class MainWindow(QMainWindow):
         tile1.setBrush(QBrush(QColor("gold")))
         tile2.setBrush(QBrush(QColor("gold")))
 
-    def generate_maze_dfs(self, graph, start):
+    def generate_maze_dfs(self, graph):
         # Create a boolean visited dictionary
         visited = {}
         for vertex in graph.keys():
             visited[vertex] = False
 
         # Traverse the graph using the recursive function
-        self.__traverse(graph, visited, start)
+        self.__traverse(graph, visited, self.maze.start)
 
         # Reset tile colors
         self.reset_tile_colors()
@@ -112,21 +112,21 @@ class MainWindow(QMainWindow):
 
     class GenerationWorker(QRunnable):
         """
-        Worker thread for maze generation.
+        Worker thread for running various maze functions.
         """
 
-        def __init__(self, maze, generate_maze):
+        def __init__(self, function, *args, **kwargs):
             super().__init__()
-            self.maze = maze
-            self.generate_maze = generate_maze
+            self.function = function
+            self.args = args
+            self.kwargs = kwargs
 
         @pyqtSlot()
         def run(self):
             """
-            Runs the maze generation algorithm using the dedicated thread.
+            Runs the function passed to the worker thread.
             """
-            start = self.maze.start
-            self.generate_maze(self.maze.graph, start)
+            self.function(*self.args, **self.kwargs)
 
 if __name__ == '__main__':
     maze_size = 25
