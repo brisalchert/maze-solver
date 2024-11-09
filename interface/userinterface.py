@@ -1,6 +1,6 @@
-from PyQt5.QtCore import Qt, QRectF
-from PyQt5.QtGui import QBrush
-from PyQt5.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsView, QWidget, QVBoxLayout
+from PyQt6.QtCore import Qt, QRectF
+from PyQt6.QtGui import QBrush, QColor
+from PyQt6.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsView, QWidget, QVBoxLayout
 
 class MazeWidget(QWidget):
     def __init__(self, length):
@@ -9,7 +9,7 @@ class MazeWidget(QWidget):
         self.tile_size = 20
         self.scene = QGraphicsScene()
         self.view = QGraphicsView(self.scene, self)
-        self.view.setBackgroundBrush(QBrush(Qt.darkGray))
+        self.view.setBackgroundBrush(QBrush(QColor("darkgray")))
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.view)
         self.setLayout(self.layout)
@@ -24,7 +24,7 @@ class MazeWidget(QWidget):
                 x_pos = x * self.tile_size
                 y_pos = y * self.tile_size
                 tile = MazeTile(x, y, self.tile_size)
-                tile.setBrush(QBrush(Qt.lightGray))
+                tile.setBrush(QBrush(QColor("lightgray")))
                 tile.setPos(x_pos, y_pos)
                 self.scene.addItem(tile)
 
@@ -51,7 +51,7 @@ class MazeTile(QGraphicsItem):
         self.left_wall_visible = True
         self.right_wall_visible = True
 
-        self._brush = QBrush(Qt.black)
+        self._brush = QBrush(QColor("black"))
 
     def setBrush(self, brush):
         self._brush = brush
@@ -85,10 +85,10 @@ class MazeTile(QGraphicsItem):
     def paint(self, painter=None, style=None, widget=None):
         painter.fillRect(self.tile, self._brush)
         if self.top_wall_visible:
-            painter.fillRect(self.top_wall, QBrush(Qt.black))
+            painter.fillRect(self.top_wall, QBrush(QColor("black")))
         if self.bottom_wall_visible:
-            painter.fillRect(self.bottom_wall, QBrush(Qt.black))
+            painter.fillRect(self.bottom_wall, QBrush(QColor("black")))
         if self.left_wall_visible:
-            painter.fillRect(self.left_wall, QBrush(Qt.black))
+            painter.fillRect(self.left_wall, QBrush(QColor("black")))
         if self.right_wall_visible:
-            painter.fillRect(self.right_wall, QBrush(Qt.black))
+            painter.fillRect(self.right_wall, QBrush(QColor("black")))
