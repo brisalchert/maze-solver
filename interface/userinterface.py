@@ -6,7 +6,7 @@ class MazeWidget(QWidget):
     def __init__(self, length):
         super().__init__()
         self.dimension = length
-        self.tile_size = 30
+        self.tile_size = 20
         self.scene = QGraphicsScene()
         self.view = QGraphicsView(self.scene, self)
         self.view.setBackgroundBrush(QBrush(Qt.darkGray))
