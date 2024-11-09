@@ -32,6 +32,9 @@ class MainWindow(QMainWindow):
         self.threadpool = QThreadPool()
 
     def generate_maze(self):
+        # Reset the maze
+        self.reset_maze()
+
         worker = GenerationWorker(self.generate_maze_dfs, self.maze.graph)
 
         # Set thread to re-enabled generation on completion
@@ -54,6 +57,12 @@ class MainWindow(QMainWindow):
             for y in range(self.maze.length):
                 tile = self.maze_widget.get_tile(x, y)
                 tile.setBrush(QBrush(QColor("lightgray")))
+
+    def reset_maze(self):
+        for x in range(self.maze.length):
+            for y in range(self.maze.length):
+                tile = self.maze_widget.get_tile(x, y)
+                tile.enableAllWalls()
 
     def toggle_wall(self, node1, node2):
         # Get tiles from nodes

@@ -93,6 +93,12 @@ class MazeTile(QGraphicsItem):
                 pass
         self.com.tileChanged.emit()
 
+    def enableAllWalls(self):
+        self.top_wall_visible = True
+        self.bottom_wall_visible = True
+        self.left_wall_visible = True
+        self.right_wall_visible = True
+
     def isAdjacent(self, other_tile):
         if self.x == other_tile.x:
             if self.y == other_tile.y - 1 or self.y == other_tile.y + 1:
