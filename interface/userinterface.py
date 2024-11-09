@@ -2,32 +2,11 @@ from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtGui import QBrush
 from PyQt5.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsView, QWidget, QVBoxLayout
 
-
-def toggle_wall(tile1, tile2):
-    if not tile1.isAdjacent(tile2):
-        return False
-    if tile1.x == tile2.x:
-        if tile1.y == tile2.y - 1:
-            tile1.toggleWallVisible("bottom")
-            tile2.toggleWallVisible("top")
-        if tile1.y == tile2.y + 1:
-            tile1.toggleWallVisible("top")
-            tile2.toggleWallVisible("bottom")
-    else:
-        if tile1.x == tile2.x - 1:
-            tile1.toggleWallVisible("right")
-            tile2.toggleWallVisible("left")
-        if tile1.y == tile2.y + 1:
-            tile1.toggleWallVisible("left")
-            tile2.toggleWallVisible("right")
-    return True
-
 class MazeWidget(QWidget):
     def __init__(self, length):
         super().__init__()
         self.dimension = length
         self.tile_size = 30
-        self.model = None
         self.scene = QGraphicsScene()
         self.view = QGraphicsView(self.scene, self)
         self.view.setBackgroundBrush(QBrush(Qt.darkGray))
@@ -38,9 +17,6 @@ class MazeWidget(QWidget):
 
         # Initialize the maze tiles
         self.initialize_tiles()
-
-    def setModel(self, model):
-        self.model = model
 
     def initialize_tiles(self):
         for x in range(self.dimension):
