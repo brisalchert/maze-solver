@@ -8,6 +8,10 @@ from maze import Node
 
 class Maze:
     def __init__(self, length):
+        # Start and End nodes
+        self.start = None
+        self.end = None
+
         # Graph for maze
         self.graph = {}
 
@@ -28,6 +32,12 @@ class Maze:
             for y in range(self.length):
                 # Create node
                 node = Node(x, y)
+
+                # Save start and end nodes
+                if x == 0 and y == 0:
+                    self.start = node
+                if x == self.length - 1 and y == self.length - 1:
+                    self.end = node
 
                 # Initialize adjacency list
                 self.graph[node] = []
