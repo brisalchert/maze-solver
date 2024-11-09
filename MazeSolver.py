@@ -28,6 +28,7 @@ class MainWindow(QMainWindow):
         self.generate_button = QPushButton("Start", self)
         self.generate_button.clicked.connect(self.generate_maze)
         self.maze_widget.layout.addWidget(self.generate_button)
+        self.maze_generated = False
 
         self.dfs_button = QPushButton("DFS", self)
         self.dfs_button.clicked.connect(self.solve_maze_dfs)
@@ -38,6 +39,7 @@ class MainWindow(QMainWindow):
     def generate_maze(self):
         # Reset the maze
         self.reset_maze()
+        self.maze_generated = False
 
         worker = Worker(self.generate_maze_dfs, self.maze, self.slow_factor)
 
@@ -74,6 +76,10 @@ class MainWindow(QMainWindow):
         self.maze.reset_graph()
 
     def solve_maze_dfs(self):
+        # Check that the maze has been generated
+        if not self.maze_generated:
+            return False
+
         # Initialize DFS
         solve_dfs = DepthFirstSearch(self.maze, self.set_tile_color, slow_factor=self.slow_factor)
 
@@ -139,6 +145,9 @@ class MainWindow(QMainWindow):
 
         # Traverse the graph using the recursive function
         self.__traverse(maze, visited, self.maze.start, slow_factor)
+
+        # Set maze generated flag
+        self.maze_generated = True
 
         # Reset tile colors
         self.reset_tile_colors()
