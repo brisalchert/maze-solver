@@ -4,7 +4,7 @@ import traceback
 from time import sleep
 from PyQt6.QtCore import QRunnable, pyqtSlot, QThreadPool, pyqtSignal, QObject
 from PyQt6.QtGui import QBrush, QColor
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton
+from PyQt6.QtWidgets import QApplication, QMainWindow
 from interface.userinterface import MazeWidget
 from maze import Maze
 from traversals import DepthFirstSearch
@@ -16,6 +16,7 @@ class MainWindow(QMainWindow):
     def __init__(self, size, slow_factor=None):
         super().__init__()
         self.setWindowTitle("Maze Solver")
+        self.setFixedSize(824, 618)
 
         # Initialize maze and view
         self.maze = Maze(size)

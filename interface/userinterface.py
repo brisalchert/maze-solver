@@ -22,7 +22,6 @@ class MazeWidget(QWidget):
         self.dfs_button = QPushButton("Solve with DFS", self)
 
         self.log = QListWidget(self)
-        self.log.setMinimumWidth(260)
 
         self.maze_layout = QVBoxLayout()
         self.maze_layout.addWidget(self.view)
