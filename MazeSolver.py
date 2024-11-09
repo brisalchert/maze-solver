@@ -50,12 +50,10 @@ class MainWindow(QMainWindow):
         self.threadpool.start(worker)
 
     def disable_buttons(self):
-        self.maze_widget.generate_button.setEnabled(False)
-        self.maze_widget.dfs_button.setEnabled(False)
+        self.maze_widget.disable_buttons()
 
     def enable_buttons(self):
-        self.maze_widget.generate_button.setEnabled(True)
-        self.maze_widget.dfs_button.setEnabled(True)
+        self.maze_widget.enable_buttons()
 
     def reset_tile_colors(self):
         for x in range(self.maze.length):
