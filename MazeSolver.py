@@ -35,7 +35,7 @@ class MainWindow(QMainWindow):
         # Reset the maze
         self.reset_maze()
 
-        worker = GenerationWorker(self.generate_maze_dfs, self.maze.graph)
+        worker = Worker(self.generate_maze_dfs, self.maze.graph, self.slow_factor)
 
         # Set thread to re-enabled generation on completion
         worker.signals.finished.connect(self.enable_generation)
@@ -102,23 +102,23 @@ class MainWindow(QMainWindow):
         tile1.setBrush(QBrush(QColor("gold")))
         tile2.setBrush(QBrush(QColor("gold")))
 
-    def generate_maze_dfs(self, graph):
+    def generate_maze_dfs(self, graph, slow_factor):
         # Create a boolean visited dictionary
         visited = {}
         for vertex in graph.keys():
             visited[vertex] = False
 
         # Traverse the graph using the recursive function
-        self.__traverse(graph, visited, self.maze.start)
+        self.__traverse(graph, visited, self.maze.start, slow_factor)
 
         # Reset tile colors
         self.reset_tile_colors()
 
-    def __traverse(self, graph, visited, current):
+    def __traverse(self, graph, visited, current, slow_factor):
         # Mark current node as visited
         visited[current] = True
 
-        sleep(0.005)
+        sleep(slow_factor)
 
         # Recursively visit all adjacent unvisited nodes
         for i in range(len(graph[current])):
@@ -128,11 +128,11 @@ class MainWindow(QMainWindow):
                 # Remove the wall between the two nodes
                 self.toggle_wall(current, neighbor)
                 # Visit the neighbor node
-                self.__traverse(graph, visited, neighbor)
+                self.__traverse(graph, visited, neighbor, slow_factor)
                 self.backtrack(current, neighbor)
-                sleep(0.005)
+                sleep(slow_factor)
 
-class GenerationWorker(QRunnable):
+class Worker(QRunnable):
     """
     (Adapted from: https://www.pythonguis.com/tutorials/multithreading-pyqt6-applications-qthreadpool/)
     Worker thread for running various maze functions.
