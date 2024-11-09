@@ -29,6 +29,10 @@ class MainWindow(QMainWindow):
         self.generate_button.clicked.connect(self.generate_maze)
         self.maze_widget.layout.addWidget(self.generate_button)
 
+        self.dfs_button = QPushButton("DFS", self)
+        self.dfs_button.clicked.connect(self.solve_maze_dfs)
+        self.maze_widget.layout.addWidget(self.dfs_button)
+
         self.threadpool = QThreadPool()
 
     def generate_maze(self):
@@ -37,21 +41,22 @@ class MainWindow(QMainWindow):
 
         worker = Worker(self.generate_maze_dfs, self.maze, self.slow_factor)
 
-        # Set thread to re-enabled generation on completion
-        worker.signals.finished.connect(self.enable_generation)
-        worker.signals.finished.connect(self.solve_maze_dfs)
+        # Set thread to re-enabled buttons on completion
+        worker.signals.finished.connect(self.enable_buttons)
 
-        # Disable the generation button
-        self.disable_generation()
+        # Disable the buttons
+        self.disable_buttons()
 
         # Start the generation thread
         self.threadpool.start(worker)
 
-    def disable_generation(self):
+    def disable_buttons(self):
         self.generate_button.setEnabled(False)
+        self.dfs_button.setEnabled(False)
 
-    def enable_generation(self):
+    def enable_buttons(self):
         self.generate_button.setEnabled(True)
+        self.dfs_button.setEnabled(True)
 
     def reset_tile_colors(self):
         for x in range(self.maze.length):
@@ -74,6 +79,14 @@ class MainWindow(QMainWindow):
 
         # Initialize worker thread to perform DFS
         worker = Worker(solve_dfs.dfs)
+
+        # Set thread to re-enable buttons upon completion
+        worker.signals.finished.connect(self.enable_buttons)
+
+        # Disable buttons
+        self.disable_buttons()
+
+        # Start the DFS thread
         self.threadpool.start(worker)
 
     def set_tile_color(self, x, y, color):
