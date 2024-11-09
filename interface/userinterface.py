@@ -1,5 +1,5 @@
 from PyQt6 import QtCore
-from PyQt6.QtCore import Qt, QRectF, pyqtSignal, QObject
+from PyQt6.QtCore import Qt, QRectF, pyqtSignal, QObject, QRect
 from PyQt6.QtGui import QBrush, QColor
 from PyQt6.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsView, QWidget, QVBoxLayout
 
@@ -8,11 +8,15 @@ class MazeWidget(QWidget):
         super().__init__()
         self.dimension = length
         self.tile_size = 20
+        self.view_size = self.tile_size * (self.dimension + 2)
         self.scene = QGraphicsScene()
         self.view = QGraphicsView(self.scene, self)
+        self.view.setMaximumSize(self.view_size, self.view_size)
+        self.view.setMinimumSize(self.view_size, self.view_size)
         self.view.setBackgroundBrush(QBrush(QColor("darkgray")))
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.view)
+        self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setLayout(self.layout)
         self.tiles = {}
 

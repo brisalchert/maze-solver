@@ -16,7 +16,6 @@ class MainWindow(QMainWindow):
     def __init__(self, size):
         super().__init__()
         self.setWindowTitle("Maze Solver")
-        self.setGeometry(1100, 500, 600, 600)
 
         self.maze = Maze(size)
         self.maze_widget = MazeWidget(size)
