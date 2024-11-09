@@ -108,3 +108,7 @@ class Maze:
         # Add edge in both directions
         self.graph[node1].append(node2)
         self.graph[node2].append(node1)
+
+    def reset_graph(self):
+        for node in self.graph.keys():
+            self.graph[node] = []
