@@ -13,7 +13,7 @@ class MazeWidget(QWidget):
         self.view = QGraphicsView(self.scene, self)
         self.view.setMaximumSize(self.view_size, self.view_size)
         self.view.setMinimumSize(self.view_size, self.view_size)
-        self.view.setBackgroundBrush(QBrush(QColor("darkgray")))
+        self.view.setBackgroundBrush(QBrush(QColor("gray")))
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.view)
         self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
