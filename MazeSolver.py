@@ -41,6 +41,9 @@ class MainWindow(QMainWindow):
         self.reset_maze_walls()
         self.maze_generated = False
 
+        # Reset maze colors
+        self.reset_tile_colors()
+
         worker = Worker(self.generate_maze_dfs, self.maze, self.slow_factor)
 
         # Set thread to re-enabled buttons on completion
@@ -79,6 +82,9 @@ class MainWindow(QMainWindow):
         # Check that the maze has been generated
         if not self.maze_generated:
             return False
+
+        # Reset maze colors
+        self.reset_tile_colors()
 
         # Initialize DFS
         solve_dfs = DepthFirstSearch(self.maze, self.set_tile_color, slow_factor=self.slow_factor)
