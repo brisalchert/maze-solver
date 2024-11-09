@@ -1,4 +1,5 @@
-from PyQt6.QtCore import Qt, QRectF
+from PyQt6 import QtCore
+from PyQt6.QtCore import Qt, QRectF, pyqtSignal, QObject
 from PyQt6.QtGui import QBrush, QColor
 from PyQt6.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsView, QWidget, QVBoxLayout
 
@@ -18,6 +19,21 @@ class MazeWidget(QWidget):
         # Initialize the maze tiles
         self.initialize_tiles()
 
+        # Connect tile changes to view updates
+        self.connect_tile_updates()
+
+    def connect_tile_updates(self):
+        for x in range(self.dimension):
+            for y in range(self.dimension):
+                tile = self.tiles.get((x, y))
+
+                # Connect tileChanged signal to the update method
+                tile.com.tileChanged.connect(self.update_view)
+
+    @QtCore.pyqtSlot()
+    def update_view(self):
+        self.view.viewport().update()
+
     def initialize_tiles(self):
         for x in range(self.dimension):
             for y in range(self.dimension):
@@ -35,6 +51,10 @@ class MazeWidget(QWidget):
         return self.tiles[(x, y)]
 
 class MazeTile(QGraphicsItem):
+    # Define signal as class variable
+    class Communicate(QObject):
+        tileChanged = pyqtSignal()
+
     def __init__(self, x, y, tile_size):
         super().__init__()
         self.x = x
@@ -53,9 +73,11 @@ class MazeTile(QGraphicsItem):
 
         self._brush = QBrush(QColor("black"))
 
+        self.com = self.Communicate()
+
     def setBrush(self, brush):
         self._brush = brush
-        self.update()
+        self.com.tileChanged.emit()
 
     def toggleWallVisible(self, wall=None):
         match wall:
@@ -69,6 +91,7 @@ class MazeTile(QGraphicsItem):
                 self.right_wall_visible = not self.right_wall_visible
             case _:
                 pass
+        self.com.tileChanged.emit()
 
     def isAdjacent(self, other_tile):
         if self.x == other_tile.x:
