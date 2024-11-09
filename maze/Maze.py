@@ -21,6 +21,9 @@ class Maze:
         # Initialize maze nodes
         self.__initialize_nodes()
 
+        # Add all edges for adjacent nodes
+        self.add_all_adjacent()
+
     def __initialize_nodes(self):
         """
         Initializes all graph nodes and populates their neighbor lists.
@@ -90,3 +93,9 @@ class Maze:
                 grid[(col, row - 1)].add_neighbor(grid[(col, row)])
 
                 col -= 1
+
+    def add_all_adjacent(self):
+        for node in self.graph.keys():
+            for neighbor in node.get_neighbors():
+                if neighbor not in self.graph[node]:
+                    self.graph[node].append(neighbor)
