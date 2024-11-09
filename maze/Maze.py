@@ -15,6 +15,9 @@ class Maze:
         # Graph for maze
         self.graph = {}
 
+        # Graph for maze generation
+        self.generation_graph = {}
+
         # Length and width of maze
         self.length = length
 
@@ -22,7 +25,7 @@ class Maze:
         self.__initialize_nodes()
 
         # Add all edges for adjacent nodes
-        self.add_all_adjacent()
+        self.initialize_generation_graph()
 
     def __initialize_nodes(self):
         """
@@ -42,8 +45,9 @@ class Maze:
                 if x == self.length - 1 and y == self.length - 1:
                     self.end = node
 
-                # Initialize adjacency list
+                # Initialize adjacency list for both graphs
                 self.graph[node] = []
+                self.generation_graph[node] = []
 
                 # Add node to the temporary grid
                 grid[(x, y)] = node
@@ -94,8 +98,8 @@ class Maze:
 
                 col -= 1
 
-    def add_all_adjacent(self):
-        for node in self.graph.keys():
+    def initialize_generation_graph(self):
+        for node in self.generation_graph.keys():
             for neighbor in node.get_neighbors():
-                if neighbor not in self.graph[node]:
-                    self.graph[node].append(neighbor)
+                if neighbor not in self.generation_graph[node]:
+                    self.generation_graph[node].append(neighbor)
