@@ -1,7 +1,9 @@
 from PyQt6 import QtCore
-from PyQt6.QtCore import Qt, QRectF, pyqtSignal, QObject, QRect
+from PyQt6.QtCore import Qt, QRectF, pyqtSignal, QObject
 from PyQt6.QtGui import QBrush, QColor
-from PyQt6.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsView, QWidget, QVBoxLayout
+from PyQt6.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsView, QWidget, QVBoxLayout, QListWidget, \
+    QHBoxLayout, QPushButton
+
 
 class MazeWidget(QWidget):
     def __init__(self, length):
@@ -16,10 +18,23 @@ class MazeWidget(QWidget):
         self.view.setMinimumSize(self.view_size, self.view_size)
         self.view.setBackgroundBrush(QBrush(QColor("gray")))
 
-        self.layout = QVBoxLayout()
-        self.layout.addWidget(self.view)
-        self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.setLayout(self.layout)
+        self.generate_button = QPushButton("Generate Maze", self)
+        self.dfs_button = QPushButton("Solve with DFS", self)
+
+        self.log = QListWidget(self)
+        self.log.setMinimumWidth(260)
+
+        self.maze_layout = QVBoxLayout()
+        self.maze_layout.addWidget(self.view)
+        self.maze_layout.addWidget(self.generate_button)
+        self.maze_layout.addWidget(self.dfs_button)
+        self.maze_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.top_level_layout = QHBoxLayout()
+        self.top_level_layout.addLayout(self.maze_layout)
+        self.top_level_layout.addWidget(self.log)
+        self.top_level_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.setLayout(self.top_level_layout)
 
         # Initialize MazeTile dictionary
         self.tiles = {}

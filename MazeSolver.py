@@ -24,14 +24,9 @@ class MainWindow(QMainWindow):
         # Factor to slow maze traversal algorithms by (in seconds per step)
         self.slow_factor = 0.005
 
-        self.generate_button = QPushButton("Generate Maze", self)
-        self.generate_button.clicked.connect(self.generate_maze)
-        self.maze_widget.layout.addWidget(self.generate_button)
+        self.maze_widget.generate_button.clicked.connect(self.generate_maze)
+        self.maze_widget.dfs_button.clicked.connect(self.solve_maze_dfs)
         self.maze_generated = False
-
-        self.dfs_button = QPushButton("Solve with DFS", self)
-        self.dfs_button.clicked.connect(self.solve_maze_dfs)
-        self.maze_widget.layout.addWidget(self.dfs_button)
 
         self.threadpool = QThreadPool()
 
@@ -55,12 +50,12 @@ class MainWindow(QMainWindow):
         self.threadpool.start(worker)
 
     def disable_buttons(self):
-        self.generate_button.setEnabled(False)
-        self.dfs_button.setEnabled(False)
+        self.maze_widget.generate_button.setEnabled(False)
+        self.maze_widget.dfs_button.setEnabled(False)
 
     def enable_buttons(self):
-        self.generate_button.setEnabled(True)
-        self.dfs_button.setEnabled(True)
+        self.maze_widget.generate_button.setEnabled(True)
+        self.maze_widget.dfs_button.setEnabled(True)
 
     def reset_tile_colors(self):
         for x in range(self.maze.length):
