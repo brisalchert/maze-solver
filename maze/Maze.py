@@ -103,3 +103,8 @@ class Maze:
             for neighbor in node.get_neighbors():
                 if neighbor not in self.generation_graph[node]:
                     self.generation_graph[node].append(neighbor)
+
+    def add_edge(self, node1, node2):
+        # Add edge in both directions
+        self.graph[node1].append(node2)
+        self.graph[node2].append(node1)
