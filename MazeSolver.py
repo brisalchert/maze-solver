@@ -17,6 +17,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Maze Solver")
 
+        # Initialize maze and view
         self.maze = Maze(size)
         self.maze_widget = MazeWidget(size)
         self.setCentralWidget(self.maze_widget)
@@ -24,10 +25,14 @@ class MainWindow(QMainWindow):
         # Factor to slow maze traversal algorithms by (in seconds per step)
         self.slow_factor = 0.005
 
-        self.maze_widget.generate_button.clicked.connect(self.generate_maze)
-        self.maze_widget.dfs_button.clicked.connect(self.solve_maze_dfs)
+        # Assign button functions
+        self.maze_widget.assign_generate_button(self.generate_maze)
+        self.maze_widget.assign_dfs_button(self.solve_maze_dfs)
+
+        # Initialize generation flag
         self.maze_generated = False
 
+        # Initialize threadpool
         self.threadpool = QThreadPool()
 
     def generate_maze(self):

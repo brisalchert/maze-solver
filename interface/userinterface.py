@@ -45,6 +45,12 @@ class MazeWidget(QWidget):
         # Connect tile changes to view updates
         self.connect_tile_updates()
 
+    def assign_generate_button(self, function):
+        self.generate_button.clicked.connect(function)
+
+    def assign_dfs_button(self, function):
+        self.dfs_button.clicked.connect(function)
+
     def disable_buttons(self):
         self.generate_button.setEnabled(False)
         self.dfs_button.setEnabled(False)
