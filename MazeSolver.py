@@ -28,7 +28,7 @@ class MainWindow(QMainWindow):
 
         # Assign button functions
         self.maze_widget.assign_generate_button(self.generate_maze)
-        self.maze_widget.assign_dfs_button(self.solve_maze_dfs)
+        self.maze_widget.assign_solve_button(self.solve_maze)
 
         # Initialize generation flag
         self.maze_generated = False
@@ -37,12 +37,28 @@ class MainWindow(QMainWindow):
         self.threadpool = QThreadPool()
 
     def generate_maze(self):
-        # Reset the maze
-        self.reset_maze_walls()
         self.maze_generated = False
 
-        # Reset maze colors
-        self.reset_tile_colors()
+        # Get the maze size from slider
+        size = self.maze_widget.get_slider_value()
+
+        # Recreate maze if necessary
+        if self.maze.length != size:
+            # Recreate Maze object
+            self.maze = Maze(size)
+
+            # Recreate the view
+            self.maze_widget.update_maze_size(size)
+            self.maze_widget.reset_view()
+
+            # Set maze endpoint colors
+            self.set_endpoint_colors()
+        else:
+            # Reset the maze
+            self.reset_maze_walls()
+
+            # Reset maze colors
+            self.reset_tile_colors()
 
         worker = Worker(self.generate_maze_dfs, self.maze, self.slow_factor)
 
@@ -72,7 +88,7 @@ class MainWindow(QMainWindow):
                 log_process = "DFS:"
 
         # Format log output
-        log_output = "{:21}{:6.4f}s".format(log_process, function_runtime)
+        log_output = "{:20}{:6.4f}s".format(log_process, function_runtime)
 
         if log_process:
             self.maze_widget.print_to_log(log_output)
@@ -107,11 +123,18 @@ class MainWindow(QMainWindow):
         # Reset maze graph
         self.maze.reset_graph()
 
-    def solve_maze_dfs(self):
+    def solve_maze(self):
         # Check that the maze has been generated
         if not self.maze_generated:
-            return False
+            return False                                    # !!! ADD ALERT !!! #
 
+        algorithm = self.maze_widget.get_algorithm()
+
+        match algorithm:
+            case "Depth First Search":
+                self.solve_maze_dfs()
+
+    def solve_maze_dfs(self):
         # Reset maze colors
         self.reset_tile_colors()
 
