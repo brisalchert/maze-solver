@@ -42,10 +42,6 @@ class DepthFirstSearch:
         if current == self.end:
             self.reached[0] = True
 
-            # Change tile color to the path
-            if (current != self.start) & (current != self.end):
-                self.set_color(x, y, "green")
-
             return
 
         # Recursively traverse adjacent nodes until the goal is found
