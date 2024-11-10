@@ -5,6 +5,7 @@
 # ----------------------------------------------------------------------------------------------------------------------
 
 from time import sleep
+from traversals import runtime
 
 class DepthFirstSearch:
     def __init__(self, maze, set_color, slow_factor=None):
@@ -15,6 +16,7 @@ class DepthFirstSearch:
         self.set_color = set_color
         self.slow_factor = slow_factor
 
+    @runtime
     def dfs(self):
         # Create a boolean visited dictionary
         visited = {}
