@@ -8,6 +8,7 @@ from PyQt6.QtWidgets import QApplication, QMainWindow
 from interface.userinterface import MazeWidget
 from maze import Maze
 from traversals import runtime, DepthFirstSearch
+from traversals.BreadthFirstSearch import BreadthFirstSearch
 
 # Increase recursion limit
 sys.setrecursionlimit(10000)
@@ -86,6 +87,8 @@ class MainWindow(QMainWindow):
                 log_process = "Maze Generation:"
             case "dfs":
                 log_process = "DFS:"
+            case "bfs":
+                log_process = "BFS:"
 
         # Format log output
         log_output = "{:20}{:6.4f}s".format(log_process, function_runtime)
@@ -141,6 +144,8 @@ class MainWindow(QMainWindow):
         match algorithm:
             case "Depth First Search":
                 worker = self.solve_maze_dfs()
+            case "Breadth First Search":
+                worker = self.solve_maze_bfs()
 
         # Set thread to re-enable buttons upon completion
         worker.signals.finished.connect(self.enable_buttons)
@@ -157,6 +162,15 @@ class MainWindow(QMainWindow):
 
         # Initialize worker thread to perform DFS
         worker = Worker(solve_dfs.dfs)
+
+        return worker
+
+    def solve_maze_bfs(self):
+        # Initialize BFS
+        solve_bfs = BreadthFirstSearch(self.maze, self.set_tile_color, slow_factor=self.slow_factor)
+
+        # Initialize worker thread to perform BFS
+        worker = Worker(solve_bfs.bfs)
 
         return worker
 
