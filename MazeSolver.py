@@ -91,7 +91,7 @@ class MainWindow(QMainWindow):
                 log_process = "BFS:"
 
         # Format log output
-        log_output = "{:20}{:6.4f}s".format(log_process, function_runtime)
+        log_output = "{:18}{:8.4f}s".format(log_process, function_runtime)
 
         if log_process:
             self.maze_widget.print_to_log(log_output)
