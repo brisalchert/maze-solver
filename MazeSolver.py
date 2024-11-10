@@ -130,19 +130,17 @@ class MainWindow(QMainWindow):
 
         algorithm = self.maze_widget.get_algorithm()
 
-        match algorithm:
-            case "Depth First Search":
-                self.solve_maze_dfs()
-
-    def solve_maze_dfs(self):
         # Reset maze colors
         self.reset_tile_colors()
 
-        # Initialize DFS
-        solve_dfs = DepthFirstSearch(self.maze, self.set_tile_color, slow_factor=self.slow_factor)
+        # Disable buttons
+        self.disable_buttons()
 
-        # Initialize worker thread to perform DFS
-        worker = Worker(solve_dfs.dfs)
+        worker = None
+
+        match algorithm:
+            case "Depth First Search":
+                worker = self.solve_maze_dfs()
 
         # Set thread to re-enable buttons upon completion
         worker.signals.finished.connect(self.enable_buttons)
@@ -150,11 +148,17 @@ class MainWindow(QMainWindow):
         # Print runtime once thread completes
         worker.signals.result.connect(self.log_runtime)
 
-        # Disable buttons
-        self.disable_buttons()
-
         # Start the DFS thread
         self.threadpool.start(worker)
+
+    def solve_maze_dfs(self):
+        # Initialize DFS
+        solve_dfs = DepthFirstSearch(self.maze, self.set_tile_color, slow_factor=self.slow_factor)
+
+        # Initialize worker thread to perform DFS
+        worker = Worker(solve_dfs.dfs)
+
+        return worker
 
     def set_tile_color(self, x, y, color):
         tile = self.maze_widget.get_tile(x, y)
