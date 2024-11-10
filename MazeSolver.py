@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import QApplication, QMainWindow
 from interface.userinterface import MazeWidget
 from maze import Maze
 from traversals import runtime, DepthFirstSearch
-from traversals.BreadthFirstSearch import BreadthFirstSearch
+from traversals import BreadthFirstSearch
 
 # Increase recursion limit
 sys.setrecursionlimit(10000)
