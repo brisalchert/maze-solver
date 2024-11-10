@@ -6,3 +6,8 @@
 
 # Word files
 *.docx
+
+# PyInstaller files
+build
+dist
+*.spec
