@@ -7,7 +7,7 @@ from PyQt6.QtGui import QBrush, QColor
 from PyQt6.QtWidgets import QApplication, QMainWindow
 from interface.userinterface import MazeWidget
 from maze import Maze
-from traversals import DepthFirstSearch
+from traversals import runtime, DepthFirstSearch
 
 # Increase recursion limit
 sys.setrecursionlimit(10000)
@@ -49,11 +49,33 @@ class MainWindow(QMainWindow):
         # Set thread to re-enabled buttons on completion
         worker.signals.finished.connect(self.enable_buttons)
 
+        # Print runtime once thread completes
+        worker.signals.result.connect(self.log_runtime)
+
         # Disable the buttons
         self.disable_buttons()
 
         # Start the generation thread
         self.threadpool.start(worker)
+
+    def log_runtime(self, function_output):
+        # Unpack function output
+        function_name, function_runtime = function_output
+
+        log_process = None
+
+        # Set up log information for the relevant function
+        match function_name:
+            case "generate_maze_dfs":
+                log_process = "Maze Generation:"
+            case "dfs":
+                log_process = "DFS:"
+
+        # Format log output
+        log_output = "{:21}{:6.4f}s".format(log_process, function_runtime)
+
+        if log_process:
+            self.maze_widget.print_to_log(log_output)
 
     def disable_buttons(self):
         self.maze_widget.disable_buttons()
@@ -101,6 +123,9 @@ class MainWindow(QMainWindow):
 
         # Set thread to re-enable buttons upon completion
         worker.signals.finished.connect(self.enable_buttons)
+
+        # Print runtime once thread completes
+        worker.signals.result.connect(self.log_runtime)
 
         # Disable buttons
         self.disable_buttons()
@@ -154,6 +179,7 @@ class MainWindow(QMainWindow):
         if (node2 != self.maze.start) & (node2 != self.maze.end):
             tile2.setBrush(QBrush(QColor("gold")))
 
+    @runtime
     def generate_maze_dfs(self, maze, slow_factor=None):
         # Create a boolean visited dictionary
         visited = {}

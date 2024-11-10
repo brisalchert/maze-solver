@@ -1,8 +1,8 @@
-from PyQt6 import QtCore, QtGui
+from PyQt6 import QtCore
 from PyQt6.QtCore import Qt, QRectF, pyqtSignal, QObject
-from PyQt6.QtGui import QBrush, QColor
+from PyQt6.QtGui import QBrush, QColor, QFont
 from PyQt6.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsView, QWidget, QVBoxLayout, QListWidget, \
-    QHBoxLayout, QPushButton, QSpacerItem, QSizePolicy, QLayout
+    QHBoxLayout, QPushButton, QSpacerItem, QSizePolicy
 
 
 class MazeWidget(QWidget):
@@ -22,8 +22,14 @@ class MazeWidget(QWidget):
         self.dfs_button = QPushButton("Solve with DFS", self)
 
         self.log = QListWidget(self)
+        self.log.setFont(QFont("Cascadia Code", 10))
+        self.log.setViewportMargins(10, 10, 10, 10)
+        self.log.setSelectionMode(QListWidget.SelectionMode.NoSelection)
         self.log.setMinimumWidth(260)
         self.log.setMaximumWidth(260)
+
+        self.log_reset_button = QPushButton("Reset Log", self)
+        self.log_reset_button.clicked.connect(self.reset_log)
 
         self.maze_layout = QVBoxLayout()
         self.maze_layout.addWidget(self.view)
@@ -31,18 +37,22 @@ class MazeWidget(QWidget):
         self.maze_layout.addWidget(self.dfs_button)
         self.maze_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.log_layout = QHBoxLayout()
-        self.h_spacer = QSpacerItem(10000, 0, QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Expanding)
-        self.log_layout.addItem(self.h_spacer)
-        self.log_layout.addLayout(self.maze_layout)
+        self.log_layout = QVBoxLayout()
         self.log_layout.addWidget(self.log)
-        self.log_layout.addItem(self.h_spacer)
-        self.log_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.log_layout.addWidget(self.log_reset_button)
+
+        self.interface_layout = QHBoxLayout()
+        self.h_spacer = QSpacerItem(10000, 0, QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Expanding)
+        self.interface_layout.addItem(self.h_spacer)
+        self.interface_layout.addLayout(self.maze_layout)
+        self.interface_layout.addLayout(self.log_layout)
+        self.interface_layout.addItem(self.h_spacer)
+        self.interface_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.top_level_layout = QVBoxLayout()
         self.v_spacer = QSpacerItem(0, 10000, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
         self.top_level_layout.addItem(self.v_spacer)
-        self.top_level_layout.addLayout(self.log_layout)
+        self.top_level_layout.addLayout(self.interface_layout)
         self.top_level_layout.addItem(self.v_spacer)
         self.setLayout(self.top_level_layout)
 
@@ -54,6 +64,12 @@ class MazeWidget(QWidget):
 
         # Connect tile changes to view updates
         self.connect_tile_updates()
+
+    def print_to_log(self, text):
+        self.log.addItem(text)
+
+    def reset_log(self):
+        self.log.clear()
 
     def assign_generate_button(self, function):
         self.generate_button.clicked.connect(function)

@@ -18,5 +18,5 @@ def runtime(function):
         start_time = perf_counter()
         function(*args, **kwargs)
         end_time = perf_counter()
-        return end_time - start_time
+        return function.__name__, end_time - start_time
     return wrapper
