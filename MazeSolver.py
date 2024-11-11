@@ -15,7 +15,7 @@ from traversals import AStar
 sys.setrecursionlimit(10000)
 
 class MainWindow(QMainWindow):
-    def __init__(self, size, slow_factor=None):
+    def __init__(self, size):
         super().__init__()
         self.setWindowTitle("Maze Solver")
         self.setGeometry(600, 200, 824, 618)
@@ -26,11 +26,12 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.maze_widget)
 
         # Factor to slow maze traversal algorithms by (in seconds per step)
-        self.slow_factor = slow_factor
+        self.slow_factor = self.maze_widget.get_slow_value()
 
         # Assign button functions
         self.maze_widget.assign_generate_button(self.generate_maze)
         self.maze_widget.assign_solve_button(self.solve_maze)
+        self.maze_widget.assign_exit_button(sys.exit)
 
         # Initialize generation flag
         self.maze_generated = False
@@ -41,8 +42,11 @@ class MainWindow(QMainWindow):
     def generate_maze(self):
         self.maze_generated = False
 
+        # Get slow_factor value
+        self.slow_factor = self.maze_widget.get_slow_value()
+
         # Get the maze size from slider
-        size = self.maze_widget.get_slider_value()
+        size = self.maze_widget.get_size_value()
 
         # Recreate maze if necessary
         if self.maze.length != size:
@@ -133,6 +137,9 @@ class MainWindow(QMainWindow):
         # Check that the maze has been generated
         if not self.maze_generated:
             return False                                    # !!! ADD ALERT !!! #
+
+        # Get new slow_factor value
+        self.slow_factor = self.maze_widget.get_slow_value()
 
         algorithm = self.maze_widget.get_algorithm()
 
@@ -334,7 +341,7 @@ if __name__ == '__main__':
 
     app = QApplication([])
 
-    window = MainWindow(maze_size, slow_factor)
+    window = MainWindow(25)
     window.show()
 
     app.exec()

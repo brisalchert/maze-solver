@@ -13,6 +13,7 @@ class MazeWidget(QWidget):
         self.tile_size = 15
         self.view_size = self.tile_size * (self.max_dimension + 2)
         self.tiles = {}
+        self.initial_slow_value = 50
 
         self.font = QFont("Cascadia Code", 10)
 
@@ -32,12 +33,12 @@ class MazeWidget(QWidget):
         self.size_slider.setMaximum(self.max_dimension)
         self.size_slider.setTickInterval(1)
 
-        self.slider_value = QLabel(self)
-        self.slider_value.setFont(self.font)
+        self.size_value = QLabel(self)
+        self.size_value.setFont(self.font)
 
-        self.slider_label = QLabel("Maze Size:", self)
-        self.slider_label.setFont(self.font)
-        self.size_slider.valueChanged.connect(self.update_slider_label)
+        self.size_label = QLabel("Maze Size:", self)
+        self.size_label.setFont(self.font)
+        self.size_slider.valueChanged.connect(self.update_size_label)
 
         self.algorithm_selection = QComboBox(self)
         self.algorithm_selection.setFont(self.font)
@@ -48,8 +49,8 @@ class MazeWidget(QWidget):
         ])
 
         self.slider_layout = QHBoxLayout()
-        self.slider_layout.addWidget(self.slider_label)
-        self.slider_layout.addWidget(self.slider_value)
+        self.slider_layout.addWidget(self.size_label)
+        self.slider_layout.addWidget(self.size_value)
         self.slider_layout.addWidget(self.size_slider)
 
         self.generation_layout = QVBoxLayout()
@@ -63,6 +64,33 @@ class MazeWidget(QWidget):
         self.selection_layout = QHBoxLayout()
         self.selection_layout.addLayout(self.generation_layout, stretch=1)
         self.selection_layout.addLayout(self.solve_layout, stretch=1)
+
+        self.exit_button = QPushButton("Exit", self)
+        self.exit_button.setFont(self.font)
+        self.exit_button.setStyleSheet("""
+            QPushButton {
+                background-color: #E74C3C;
+            }
+        """)
+
+        self.slow_slider = QSlider(Qt.Orientation.Horizontal, self)
+        self.slow_slider.setMinimum(0)
+        self.slow_slider.setMaximum(100)
+        self.slow_slider.setTickInterval(1)
+
+        self.slow_value = QLabel(self)
+        self.slow_value.setFont(self.font)
+        self.slow_value.setMinimumWidth(24)
+        self.slow_value.setAlignment((Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignCenter))
+
+        self.slow_label = QLabel("Slow Factor:", self)
+        self.slow_label.setFont(self.font)
+        self.slow_slider.valueChanged.connect(self.update_slow_label)
+
+        self.slow_layout = QHBoxLayout()
+        self.slow_layout.addWidget(self.slow_label)
+        self.slow_layout.addWidget(self.slow_value)
+        self.slow_layout.addWidget(self.slow_slider)
 
         self.log = QListWidget(self)
         self.log.setFont(self.font)
@@ -82,12 +110,14 @@ class MazeWidget(QWidget):
         self.maze_layout = QVBoxLayout()
         self.maze_layout.addWidget(self.view)
         self.maze_layout.addLayout(self.selection_layout)
+        self.maze_layout.addLayout(self.slow_layout)
         self.maze_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.log_layout = QVBoxLayout()
         self.log_layout.addWidget(self.log_label)
         self.log_layout.addWidget(self.log)
         self.log_layout.addWidget(self.log_reset_button)
+        self.log_layout.addWidget(self.exit_button)
 
         self.interface_layout = QHBoxLayout()
         self.h_spacer = QSpacerItem(10000, 0, QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Expanding)
@@ -107,9 +137,13 @@ class MazeWidget(QWidget):
         # Initialize the maze tiles
         self.initialize_tiles()
 
-        # Initialize slider and label
+        # Initialize size slider and label
         self.size_slider.setValue(self.dimension)
-        self.update_slider_label()
+        self.update_size_label()
+
+        # Initialize slow slider and label
+        self.slow_slider.setValue(self.initial_slow_value)
+        self.update_slow_label()
 
         # Connect tile changes to view updates
         self.connect_tile_updates()
@@ -128,11 +162,17 @@ class MazeWidget(QWidget):
         self.initialize_tiles()
         self.connect_tile_updates()
 
-    def get_slider_value(self):
+    def get_size_value(self):
         return self.size_slider.value()
 
-    def update_slider_label(self):
-        self.slider_value.setText(str(self.size_slider.value()))
+    def update_size_label(self):
+        self.size_value.setText(str(self.size_slider.value()))
+
+    def get_slow_value(self):
+        return self.slow_slider.value() * 0.0001
+
+    def update_slow_label(self):
+        self.slow_value.setText(str(self.slow_slider.value()))
 
     def print_to_log(self, text):
         self.log.addItem(text)
@@ -148,6 +188,9 @@ class MazeWidget(QWidget):
 
     def assign_solve_button(self, function):
         self.solve_button.clicked.connect(function)
+
+    def assign_exit_button(self, function):
+        self.exit_button.clicked.connect(function)
 
     def disable_buttons(self):
         self.generate_button.setEnabled(False)
