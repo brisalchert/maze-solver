@@ -195,11 +195,13 @@ class MazeTile(QGraphicsItem):
         self.x = x
         self.y = y
         self.tile = QRectF(0, 0, tile_size, tile_size)
+        self.wall_color = QColor("gray")
+        self.wall_width = 1
 
-        self.top_wall = QRectF(0, 0, tile_size, 1)
-        self.bottom_wall = QRectF(0, tile_size - 1, tile_size, 1)
-        self.left_wall = QRectF(0, 0, 1, tile_size)
-        self.right_wall = QRectF(tile_size - 1, 0, 1, tile_size)
+        self.top_wall = QRectF(0, 0, tile_size, self.wall_width)
+        self.bottom_wall = QRectF(0, tile_size - self.wall_width, tile_size, self.wall_width)
+        self.left_wall = QRectF(0, 0, self.wall_width, tile_size)
+        self.right_wall = QRectF(tile_size - self.wall_width, 0, self.wall_width, tile_size)
 
         self.top_wall_visible = True
         self.bottom_wall_visible = True
@@ -249,10 +251,10 @@ class MazeTile(QGraphicsItem):
     def paint(self, painter=None, style=None, widget=None):
         painter.fillRect(self.tile, self._brush)
         if self.top_wall_visible:
-            painter.fillRect(self.top_wall, QBrush(QColor("black")))
+            painter.fillRect(self.top_wall, QBrush(self.wall_color))
         if self.bottom_wall_visible:
-            painter.fillRect(self.bottom_wall, QBrush(QColor("black")))
+            painter.fillRect(self.bottom_wall, QBrush(self.wall_color))
         if self.left_wall_visible:
-            painter.fillRect(self.left_wall, QBrush(QColor("black")))
+            painter.fillRect(self.left_wall, QBrush(self.wall_color))
         if self.right_wall_visible:
-            painter.fillRect(self.right_wall, QBrush(QColor("black")))
+            painter.fillRect(self.right_wall, QBrush(self.wall_color))
