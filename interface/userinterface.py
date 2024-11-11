@@ -9,8 +9,9 @@ class MazeWidget(QWidget):
     def __init__(self, size):
         super().__init__()
         self.dimension = size
-        self.tile_size = 20
-        self.view_size = self.tile_size * 32
+        self.max_dimension = 50
+        self.tile_size = 15
+        self.view_size = self.tile_size * (self.max_dimension + 2)
         self.tiles = {}
 
         self.font = QFont("Cascadia Code", 10)
@@ -28,7 +29,7 @@ class MazeWidget(QWidget):
 
         self.size_slider = QSlider(Qt.Orientation.Horizontal, self)
         self.size_slider.setMinimum(15)
-        self.size_slider.setMaximum(30)
+        self.size_slider.setMaximum(self.max_dimension)
         self.size_slider.setTickInterval(1)
 
         self.slider_value = QLabel(self)
