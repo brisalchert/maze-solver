@@ -48,22 +48,18 @@ class MazeWidget(QWidget):
             "A*"
         ])
 
-        self.slider_layout = QHBoxLayout()
-        self.slider_layout.addWidget(self.size_label)
-        self.slider_layout.addWidget(self.size_value)
-        self.slider_layout.addWidget(self.size_slider)
-
-        self.generation_layout = QVBoxLayout()
-        self.generation_layout.addLayout(self.slider_layout)
-        self.generation_layout.addWidget(self.generate_button)
-
-        self.solve_layout = QVBoxLayout()
-        self.solve_layout.addWidget(self.algorithm_selection)
-        self.solve_layout.addWidget(self.solve_button)
+        self.size_slider_layout = QHBoxLayout()
+        self.size_slider_layout.addWidget(self.size_label)
+        self.size_slider_layout.addWidget(self.size_value)
+        self.size_slider_layout.addWidget(self.size_slider)
 
         self.selection_layout = QHBoxLayout()
-        self.selection_layout.addLayout(self.generation_layout, stretch=1)
-        self.selection_layout.addLayout(self.solve_layout, stretch=1)
+        self.selection_layout.addLayout(self.size_slider_layout, stretch=1)
+        self.selection_layout.addWidget(self.algorithm_selection, stretch=1)
+
+        self.button_layout = QHBoxLayout()
+        self.button_layout.addWidget(self.generate_button, stretch=1)
+        self.button_layout.addWidget(self.solve_button, stretch=1)
 
         self.exit_button = QPushButton("Exit", self)
         self.exit_button.setFont(self.font)
@@ -110,6 +106,7 @@ class MazeWidget(QWidget):
         self.maze_layout = QVBoxLayout()
         self.maze_layout.addWidget(self.view)
         self.maze_layout.addLayout(self.selection_layout)
+        self.maze_layout.addLayout(self.button_layout)
         self.maze_layout.addLayout(self.slow_layout)
         self.maze_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
