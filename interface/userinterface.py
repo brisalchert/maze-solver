@@ -42,7 +42,8 @@ class MazeWidget(QWidget):
         self.algorithm_selection.setFont(self.font)
         self.algorithm_selection.addItems([
             "Depth First Search",
-            "Breadth First Search"
+            "Breadth First Search",
+            "A*"
         ])
 
         self.slider_layout = QHBoxLayout()

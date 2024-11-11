@@ -9,6 +9,7 @@ from interface.userinterface import MazeWidget
 from maze import Maze
 from traversals import runtime, DepthFirstSearch
 from traversals import BreadthFirstSearch
+from traversals import AStar
 
 # Increase recursion limit
 sys.setrecursionlimit(10000)
@@ -89,6 +90,8 @@ class MainWindow(QMainWindow):
                 log_process = "DFS:"
             case "bfs":
                 log_process = "BFS:"
+            case "a_star":
+                log_process = "A*:"
 
         # Format log output
         log_output = "{:18}{:8.4f}s".format(log_process, function_runtime)
@@ -146,6 +149,8 @@ class MainWindow(QMainWindow):
                 worker = self.solve_maze_dfs()
             case "Breadth First Search":
                 worker = self.solve_maze_bfs()
+            case "A*":
+                worker = self.solve_maze_astar()
 
         # Set thread to re-enable buttons upon completion
         worker.signals.finished.connect(self.enable_buttons)
@@ -171,6 +176,15 @@ class MainWindow(QMainWindow):
 
         # Initialize worker thread to perform BFS
         worker = Worker(solve_bfs.bfs)
+
+        return worker
+
+    def solve_maze_astar(self):
+        # Initialize A*
+        a_star = AStar(self.maze, self.set_tile_color, slow_factor=self.slow_factor)
+
+        # Initialize worker thread to perform A* search
+        worker = Worker(a_star.a_star)
 
         return worker
 
