@@ -2,7 +2,7 @@ from PyQt6 import QtCore
 from PyQt6.QtCore import Qt, QRectF, pyqtSignal, QObject
 from PyQt6.QtGui import QBrush, QColor, QFont
 from PyQt6.QtWidgets import QGraphicsItem, QGraphicsScene, QGraphicsView, QWidget, QVBoxLayout, QListWidget, \
-    QHBoxLayout, QPushButton, QSpacerItem, QSizePolicy, QComboBox, QSlider, QLabel
+    QHBoxLayout, QPushButton, QSpacerItem, QSizePolicy, QComboBox, QSlider, QLabel, QErrorMessage
 
 
 class MazeWidget(QWidget):
@@ -196,6 +196,11 @@ class MazeWidget(QWidget):
     def enable_buttons(self):
         self.generate_button.setEnabled(True)
         self.solve_button.setEnabled(True)
+
+    def display_solve_error(self):
+        error_dialog = QErrorMessage(self)
+        error_dialog.setWindowTitle("Error")
+        error_dialog.showMessage("Error: Please generate a maze before solving.")
 
     def connect_tile_updates(self):
         for x in range(self.dimension):

@@ -136,7 +136,9 @@ class MainWindow(QMainWindow):
     def solve_maze(self):
         # Check that the maze has been generated
         if not self.maze_generated:
-            return False                                    # !!! ADD ALERT !!! #
+            self.display_error()
+
+            return
 
         # Get new slow_factor value
         self.slow_factor = self.maze_widget.get_slow_value()
@@ -194,6 +196,9 @@ class MainWindow(QMainWindow):
         worker = Worker(a_star.a_star)
 
         return worker
+
+    def display_error(self):
+        self.maze_widget.display_solve_error()
 
     def set_tile_color(self, x, y, color):
         tile = self.maze_widget.get_tile(x, y)
