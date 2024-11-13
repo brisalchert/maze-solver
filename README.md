@@ -28,6 +28,6 @@ Lastly, the Runtime Log on the right-hand side stores the runtimes for each oper
 
 Below is an example of a maze after solving with the A* algorithm:
 
-![image](https://github.com/user-attachments/assets/6e4ec705-67f0-4c40-9096-a92eaa1e7644)
+![image](https://github.com/user-attachments/assets/42a42059-49a1-4c07-8e32-522e2d4a8b86)
 
 The entrance and exit of the maze are represented by the bright red and blue tiles respectively. The light-blue tiles represent nodes explored during the search algorithm, while the green tiles represent the solved path between the entrance and exit of the maze.
