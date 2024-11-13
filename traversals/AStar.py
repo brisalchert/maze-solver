@@ -98,7 +98,7 @@ class AStar:
                         return
                     else:
                         # Calculate new f, g, and h values
-                        g_new = node_details[node].g + 1.0
+                        g_new = node_details[node].g + 0.01
                         h_new = self.calculate_h_value(neighbor)
                         f_new = g_new + h_new
 
